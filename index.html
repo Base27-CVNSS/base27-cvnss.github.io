@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Base27-CVNSS4.0 · Dãy số xác thực</title>
+  <style>
+    :root {
+      --bg:#f8fafd; --card:#fff; --text:#202124; --muted:#5f6368; --line:#e8eaed;
+      --blue:#1a73e8; --blue-weak:#e8f0fe; --green:#188038; --red:#d93025; --amber:#f9ab00;
+      --shadow:0 1px 2px rgba(60,64,67,.08),0 8px 24px rgba(60,64,67,.08);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Google Sans,Inter,Roboto,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5}
+    .shell{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:28px 0 44px}
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#1a73e8,#34a853);display:grid;place-items:center;color:#fff;font-weight:750;box-shadow:var(--shadow)}
+    h1{font-size:clamp(24px,4vw,36px);line-height:1.08;margin:0;letter-spacing:-.04em}
+    .subtitle{margin:6px 0 0;color:var(--muted);font-size:14px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    button{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:999px;padding:10px 14px;font-weight:650;font-size:14px;cursor:pointer;transition:.15s ease;white-space:nowrap}
+    button:hover{box-shadow:0 1px 4px rgba(60,64,67,.18)}
+    button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    button.ghost{background:transparent}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .card h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .step{font-size:12px;color:var(--muted);font-weight:600;background:#f1f3f4;border-radius:999px;padding:3px 8px}
+    textarea{width:100%;min-height:190px;border:1px solid var(--line);border-radius:18px;background:#fbfcff;padding:14px;resize:vertical;color:var(--text);font:500 15px/1.55 ui-monospace,SFMono-Regular,Consolas,Roboto Mono,monospace;outline:none;transition:.15s ease}
+    textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-weak);background:#fff}
+    .number textarea{font-size:13px;word-break:break-all}
+    .statusbar{margin-top:14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px 16px;box-shadow:var(--shadow)}
+    .status{font-size:14px;color:var(--muted)}
+    .status.ok{color:var(--green)} .status.bad{color:var(--red)} .status.warn{color:#8a5a00}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .chip{font-size:12px;font-weight:700;border-radius:999px;padding:6px 10px;background:#f1f3f4;color:var(--muted)}
+    .chip.ok{background:#e6f4ea;color:var(--green)} .chip.bad{background:#fce8e6;color:var(--red)} .chip.warn{background:#fef7e0;color:#8a5a00}
+    .result{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+    .mini{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;min-height:72px}
+    .mini label{display:block;color:var(--muted);font-size:12px;font-weight:700;margin-bottom:5px}
+    .digit-card{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px 16px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+    .digit-card label{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:6px}
+    .digit-value{font:600 14px/1.6 ui-monospace,SFMono-Regular,Consolas,Roboto Mono,monospace;word-break:break-word;white-space:pre-wrap;color:#174ea6}
+    .digit-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff}
+    table.map-table{width:100%;border-collapse:collapse;font-size:13px}
+    .map-table th,.map-table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+    .map-table th{position:sticky;top:0;background:#f8fafd;color:var(--muted);font-weight:800}
+    .map-table tr:last-child td{border-bottom:0}
+    .char-pill{display:inline-grid;place-items:center;min-width:34px;height:28px;border-radius:10px;background:#e8f0fe;color:#174ea6;font-weight:800;font-family:ui-monospace,SFMono-Regular,Consolas,Roboto Mono,monospace}
+    .char-space{background:#f1f3f4;color:#5f6368}
+    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Roboto Mono,monospace;font-size:14px;white-space:pre-wrap;word-break:break-word}
+    .help{font-size:13px;color:var(--muted);margin:12px 4px 0}
+    dialog{width:min(940px,calc(100% - 28px));border:0;border-radius:28px;padding:0;box-shadow:0 24px 70px rgba(32,33,36,.28);background:#fff;color:var(--text)}
+    dialog::backdrop{background:rgba(32,33,36,.42);backdrop-filter:blur(2px)}
+    .modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 22px 10px;border-bottom:1px solid var(--line)}
+    .modal-head h3{margin:0;font-size:20px;letter-spacing:-.02em}
+    .modal-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .modal-body{padding:18px 22px 22px;display:grid;gap:14px}
+    .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .detail{border:1px solid var(--line);border-radius:18px;background:#fafbff;padding:12px;min-height:64px}
+    .detail label{font-size:12px;color:var(--muted);font-weight:750;display:block;margin-bottom:6px}
+    .detail .value{font:500 13px/1.5 ui-monospace,SFMono-Regular,Consolas,Roboto Mono,monospace;word-break:break-all;white-space:pre-wrap}
+    .audit-list{display:grid;gap:8px}
+    .audit-item{display:grid;grid-template-columns:14px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff}
+    .audit-item b{display:block;font-size:13px} .audit-item span{display:block;color:var(--muted);font-size:12px}
+    .dot{width:10px;height:10px;border-radius:50%;background:#dadce0} .dot.ok{background:var(--green)} .dot.bad{background:var(--red)}
+    .hide{display:none!important}
+    @media (max-width:900px){.grid{grid-template-columns:1fr} textarea{min-height:140px} header{display:block} .actions{justify-content:flex-start;margin-top:14px} .statusbar,.result,.detail-grid,.digit-card{grid-template-columns:1fr}.digit-actions{justify-content:flex-start}}
+    @media (max-width:520px){.shell{width:min(100% - 20px,1120px);padding-top:16px} .card{padding:14px;border-radius:20px} .statusbar{padding:12px;border-radius:18px} button{padding:9px 12px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand">
+        <div class="logo">CV</div>
+        <div>
+          <h1>Base27-CVNSS4.0</h1>
+          <p class="subtitle">Chuyển đổi đồng bộ: Chữ tiếng Việt (CQN) ⇄ CVNSS4.0 ⇄ Dãy số xác thực.</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="btnUseKnown" type="button">Demo</button>
+        <button id="btnOpenDetails" type="button">Chi tiết kỹ thuật</button>
+        <button id="btnCopySecured" class="primary" type="button">Copy dãy số xác thực</button>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="Bộ chuyển đổi chính">
+      <article class="card">
+        <h2>Chữ tiếng Việt (CQN) <span class="step">1</span></h2>
+        <textarea id="cqnText" spellcheck="false" placeholder="Nhập chữ tiếng Việt có dấu...">Anh mãi yêu em</textarea>
+      </article>
+      <article class="card">
+        <h2>CVNSS4.0 <span class="step">2</span></h2>
+        <textarea id="cvssText" spellcheck="false" placeholder="Nhập hoặc xem mã CVNSS4.0..."></textarea>
+      </article>
+      <article class="card number">
+        <h2>Dãy số xác thực <span class="step">3</span></h2>
+        <textarea id="securedInput" inputmode="numeric" spellcheck="false" placeholder="Dán dãy số đã xác thực... Ví dụ: 309855633802231896406396"></textarea>
+      </article>
+    </section>
+
+    <section class="statusbar" aria-live="polite">
+      <div id="mainStatus" class="status">Đang khởi tạo...</div>
+      <div class="chips">
+        <span id="syncChip" class="chip">SYNC</span>
+        <span id="checksumChip" class="chip">CS</span>
+      </div>
+    </section>
+
+    <section class="digit-card" aria-label="Dãy số Base27-CVNSS4.0">
+      <div>
+        <label>Dãy số Base27-CVNSS4.0</label>
+        <div id="mainDigSeq" class="digit-value">—</div>
+      </div>
+      <div class="digit-actions">
+        <button id="btnOpenDigitMap" type="button">Kiểm tra ánh xạ</button>
+        <button id="btnCopyDigits" type="button">Copy dãy số</button>
+      </div>
+    </section>
+
+    <section class="result">
+      <div class="mini">
+        <label>Chữ tiếng Việt (CQN) khôi phục</label>
+        <div id="decCqn" class="mono"></div>
+      </div>
+      <div class="mini">
+        <label>CVNSS4.0 giải được</label>
+        <div id="decCvss" class="mono"></div>
+      </div>
+    </section>
+    <p class="help">Dãy số <b>Base27-CVNSS4.0</b> nằm ngay trên trang chính. Bấm <b>Kiểm tra ánh xạ</b> để xem bảng <b>Ký tự | Số | Giải thích</b>; bấm <b>Chi tiết kỹ thuật</b> để xem <b>Số gốc V</b>, <b>checksum Weighted Sum Mod 97</b> và <b>loop kiểm định 4 vòng</b>.</p>
+    <p class="help">Long Ngo, @2020-2026 · Phát triển dựa trên Bảng Công thức CVNSS4.0.</p>
+  </main>
+
+  <dialog id="detailsDialog">
+    <div class="modal-head">
+      <div>
+        <h3>Chi tiết kỹ thuật</h3>
+        <p>Thông tin kiểm tra chỉ hiện khi cần, không làm rối giao diện chính.</p>
+      </div>
+      <button id="btnCloseDetails" type="button">Đóng</button>
+    </div>
+    <div class="modal-body">
+      <div class="actions" style="justify-content:flex-start">
+        <button id="btnRunAudit" type="button">Chạy loop 4 vòng</button>
+        <button id="btnCopyRaw" type="button">Copy V</button>
+      </div>
+      <textarea id="baseInput" class="hide" aria-hidden="true"></textarea>
+      <div class="detail-grid">
+        <div class="detail"><label>CVNSS chuẩn hóa để mã hóa</label><div id="encCanon" class="value"></div></div>
+        <div class="detail"><label>Dãy số Base27-CVNSS4.0</label><div id="digSeq" class="value"></div></div>
+        <div class="detail"><label>Số gốc V</label><div id="rawNum" class="value"></div></div>
+        <div class="detail"><label>Dãy số đã xác thực T = V×100+CS</label><div id="securedOut" class="value"></div></div>
+        <div class="detail"><label>Checksum Weighted Sum Mod 97</label><div id="csOut" class="value"></div></div>
+        <div class="detail"><label>Dãy số khi giải mã</label><div id="decDigits" class="value"></div></div>
+        <div class="detail"><label>cvss / cvn</label><div class="value">cvss: <span id="cvssOut"></span>
+cvn: <span id="cvnOut"></span></div></div>
+        <div class="detail"><label>Biến thể IN HOA</label><div id="decCqnUpper" class="value"></div></div>
+        <div class="detail"><label>Thống kê</label><div class="value">Ký tự: <span id="mChars">0</span>
+Số chữ số T: <span id="mDigits">0</span>
+UTF-8: <span id="mUtf8">0</span> byte
+V: <span id="mRaw">0</span></div></div>
+        <div class="detail"><label>Trạng thái mã hóa</label><div id="encStatus" class="value"></div></div>
+        <div class="detail"><label>Trạng thái chuyển đổi</label><div id="convStatus" class="value"></div></div>
+        <div class="detail"><label>Trạng thái giải mã</label><div id="decStatus" class="value"></div></div>
+      </div>
+      <div class="detail">
+        <label>Loop kiểm định <span id="auditSummary" class="chip">—</span></label>
+        <div id="auditList" class="audit-list"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="digitMapDialog">
+    <div class="modal-head">
+      <div>
+        <h3>Bảng ánh xạ Base27-CVNSS4.0</h3>
+        <p>Quy tắc tương thích Base27 dựa trên CVNSS4.0: khoảng trắng = 0, A = 1, B = 2, …, Z = 26.</p>
+      </div>
+      <button id="btnCloseDigitMap" type="button">Đóng</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail">
+        <label>Chuỗi CVNSS4.0 đang kiểm tra</label>
+        <div id="digitMapSource" class="value"></div>
+      </div>
+      <div class="detail">
+        <label>Dãy số Base27-CVNSS4.0</label>
+        <div id="digitMapDigits" class="value"></div>
+      </div>
+      <div class="table-wrap">
+        <table class="map-table" aria-label="Bảng ánh xạ ký tự Base27-CVNSS4.0">
+          <thead><tr><th>Vị trí</th><th>Ký tự</th><th>Số</th><th>Giải thích</th></tr></thead>
+          <tbody id="digitMapBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+
+const CVNSSConverter = (function() {
+            "use strict";
+            const V = "4.1.0-pro",
+                R = "CVNSS4.0 official formula + 56-rime patch + GI/i reverse fix";
+            const cons = {
+                cqn: ["ngh", "ng", "ch", "gh", "kh", "nh", "ph", "th", "tr", "gi", "qu", "b", "k", "d", "đ", "g", "h", "c",
+                    "l", "m", "n", "r", "s", "t", "v", "x"
+                ],
+                cvn: ["w", "w", "ch", "g", "k", "nh", "f", "th", "tr", "j", "q", "b", "c", "z", "d", "g", "h", "c", "l", "m",
+                    "n", "r", "s", "t", "v", "x"
+                ]
+            };
+            const vwl = {
+                cqn: ["a", "à", "ả", "ã", "á", "ạ", "oa", "òa", "ỏa", "õa", "óa", "ọa", "oà", "oả", "oã", "oá", "oạ", "oác",
+                    "oạc", "oách", "oạch", "oai", "oài", "oải", "oãi", "oái", "oại", "oao", "oào", "oảo", "oão", "oáo",
+                    "oạo", "oáp", "oạp", "oát", "oạt", "oắt", "oặt", "oắc", "oặc", "oăn", "oằn", "oẳn", "oẵn", "oắn",
+                    "oặn", "oăm", "oằm", "oẳm", "oẵm", "oắm", "oặm", "oăng", "oằng", "oẳng", "oẵng", "oắng", "oặng",
+                    "oay", "oày", "oảy", "oãy", "oáy", "oạy", "ác", "ạc", "ách", "ạch", "ai", "ài", "ải", "ãi", "ái",
+                    "ại", "am", "àm", "ảm", "ãm", "ám", "ạm", "an", "àn", "ản", "ãn", "án", "ạn", "oan", "oàn", "oản",
+                    "oãn", "oán", "oạn", "oanh", "oành", "oảnh", "oãnh", "oánh", "oạnh", "ang", "àng", "ảng", "ãng",
+                    "áng", "ạng", "oang", "oàng", "oảng", "oãng", "oáng", "oạng", "anh", "ành", "ảnh", "ãnh", "ánh",
+                    "ạnh", "ao", "ào", "ảo", "ão", "áo", "ạo", "áp", "ạp", "át", "ạt", "au", "àu", "ảu", "áu", "ạu",
+                    "ay", "ày", "ảy", "ãy", "áy", "ạy", "ắc", "ặc", "ăm", "ằm", "ẳm", "ẵm", "ắm", "ặm", "ăn", "ằn",
+                    "ẳn", "ẵn", "ắn", "ặn", "ăng", "ằng", "ẳng", "ẵng", "ắng", "ặng", "ắp", "ặp", "ắt", "ặt", "ấc",
+                    "ậc", "âm", "ầm", "ẩm", "ẫm", "ấm", "ậm", "ân", "ần", "ẩn", "ẫn", "ấn", "ận", "âng", "ầng", "ẩng",
+                    "ẫng", "ấng", "ậng", "uân", "uần", "uẩn", "uẫn", "uấn", "uận", "uâng", "uầng", "uẩng", "uẫng",
+                    "uấng", "uậng", "ấp", "ập", "ất", "ật", "uất", "uật", "âu", "ầu", "ẩu", "ẫu", "ấu", "ậu", "ây",
+                    "ầy", "ẩy", "ẫy", "ấy", "ậy", "uây", "uầy", "uẩy", "uẫy", "uấy", "uậy", "e", "è", "ẻ", "ẽ", "é",
+                    "ẹ", "oe", "òe", "ỏe", "õe", "óe", "ọe", "éc", "ẹc", "em", "èm", "ẻm", "ẽm", "ém", "ẹm", "en",
+                    "èn", "ẻn", "ẽn", "én", "ẹn", "oen", "oèn", "oẻn", "oẽn", "oén", "oẹn", "eng", "èng", "ẻng",
+                    "ẽng", "éng", "ẹng", "eo", "èo", "ẻo", "ẽo", "éo", "ẹo", "oeo", "oèo", "oẻo", "oẽo", "oéo",
+                    "oẹo", "ép", "ẹp", "ét", "ẹt", "oét", "oẹt", "ê", "ề", "ể", "ễ", "ế", "ệ", "uê", "uề", "uể",
+                    "uễ", "uế", "uệ", "ếch", "ệch", "uếch", "uệch", "êm", "ềm", "ểm", "ễm", "ếm", "ệm", "ên", "ền",
+                    "ển", "ễn", "ến", "ện", "ênh", "ềnh", "ểnh", "ễnh", "ếnh", "ệnh", "uênh", "uềnh", "uểnh", "uễnh",
+                    "uếnh", "uệnh", "ếp", "ệp", "ết", "ệt", "êu", "ều", "ểu", "ễu", "ếu", "ệu", "i", "ì", "ỉ", "ĩ",
+                    "í", "ị", "uy", "ùy", "ủy", "ũy", "úy", "ụy", "uỳ", "uỷ", "uỹ", "uý", "uỵ", "ia", "ìa", "ỉa",
+                    "ĩa", "ía", "ịa", "uya", "íc", "ích", "ịch", "uých", "uỵch", "iếc", "iệc", "iêm", "iềm", "iểm",
+                    "iễm", "iếm", "iệm", "iên", "iền", "iển", "iễn", "iến", "iện", "uyên", "uyền", "uyển", "uyễn",
+                    "uyến", "uyện", "iêng", "iềng", "iểng", "iễng", "iếng", "iệng", "iếp", "iệp", "iết", "iệt",
+                    "uyết", "uyệt", "iêu", "iều", "iểu", "iễu", "iếu", "iệu", "yêt", "yệt", "yên", "yền", "yển",
+                    "yễn", "yến", "yện", "yêm", "yềm", "yểm", "yễm", "yếm", "yệm", "yêng", "yềng", "yểng", "yễng",
+                    "yếng", "yệnh", "yêu", "yều", "yểu", "yễu", "yếu", "yệu", "im", "ìm", "ỉm", "ĩm", "ím", "ịm",
+                    "in", "ìn", "ỉn", "ĩn", "ín", "ịn", "inh", "ình", "ỉnh", "ĩnh", "ính", "ịnh", "uynh", "uỳnh",
+                    "uỷnh", "uỹnh", "uýnh", "uỵnh", "íp", "ịp", "uýp", "uỵp", "ít", "ịt", "uýt", "uỵt", "iu", "ìu",
+                    "ỉu", "ĩu", "íu", "ịu", "uyu", "uỳu", "uỷu", "uỹu", "uýu", "uỵu", "uỳn", "uỷn", "uỹn", "uýn",
+                    "uỵn", "o", "ò", "ỏ", "õ", "ó", "ọ", "óc", "ọc", "oi", "òi", "ỏi", "õi", "ói", "ọi", "om", "òm",
+                    "ỏm", "õm", "óm", "ọm", "on", "òn", "ỏn", "õn", "ón", "ọn", "ong", "òng", "ỏng", "õng", "óng",
+                    "ọng", "oóc", "oong", "oòng", "oỏng", "oõng", "oóng", "oòng", "oọng", "óp", "ọp", "ót", "ọt",
+                    "ô", "ồ", "ổ", "ỗ", "ố", "ộ", "ốc", "ộc", "ôi", "ồi", "ổi", "ỗi", "ối", "ội", "ôm", "ồm", "ổm",
+                    "ỗm", "ốm", "ộm", "ôn", "ồn", "ổn", "ỗn", "ốn", "ộn", "ông", "ồng", "ổng", "ỗng", "ống", "ộng",
+                    "ốp", "ộp", "ốt", "ột", "ơ", "ờ", "ở", "ỡ", "ớ", "ợ", "ơi", "ời", "ởi", "ỡi", "ới", "ợi", "ơm",
+                    "ờm", "ởm", "ỡm", "ớm", "ợm", "ơn", "ờn", "ởn", "ỡn", "ớn", "ợn", "ơng", "ờng", "ởng", "ỡng",
+                    "ớng", "ợng", "ớp", "ợp", "ớt", "ợt", "u", "ù", "ủ", "ũ", "ú", "ụ", "ua", "ùa", "ủa", "ũa",
+                    "úa", "ụa", "úc", "ục", "ui", "ùi", "ủi", "ũi", "úi", "ụi", "um", "ùm", "ủm", "ũm", "úm", "ụm",
+                    "un", "ùn", "ủn", "ũn", "ún", "ụn", "ung", "ùng", "ủng", "ũng", "úng", "ụng", "uơ", "uờ", "uở",
+                    "uỡ", "uớ", "uợ", "uơn", "uờn", "uởn", "uỡn", "uớn", "uợn", "uớt", "uợt", "uốc", "uộc", "uôi",
+                    "uồi", "uổi", "uỗi", "uối", "uội", "uôm", "uồm", "uổm", "uỗm", "uốm", "uộm", "uôn", "uồn",
+                    "uổn", "uỗn", "uốn", "uộn", "uông", "uồng", "uổng", "uỗng", "uống", "uộng", "uốt", "uột",
+                    "uốp", "uộp", "úp", "ụp", "út", "ụt", "ư", "ừ", "ử", "ữ", "ứ", "ự", "ưa", "ừa", "ửa", "ữa",
+                    "ứa", "ựa", "ức", "ực", "ưi", "ừi", "ửi", "ữi", "ứi", "ựi", "ưm", "ừm", "ửm", "ữm", "ứm",
+                    "ựm", "ưn", "ừn", "ửn", "ữn", "ứn", "ựn", "ưng", "ừng", "ửng", "ững", "ứng", "ựng", "ước",
+                    "ược", "ươi", "ười", "ưởi", "ưỡi", "ưới", "ượi", "ươm", "ườm", "ưởm", "ưỡm", "ướm", "ượm",
+                    "ươn", "ườn", "ưởn", "ưỡn", "ướn", "ượn", "ương", "ường", "ưởng", "ưỡng", "ướng", "ượng",
+                    "ướp", "ượp", "ướt", "ượt", "ươu", "ườu", "ưởu", "ưỡu", "ướu", "ượu", "ứt", "ựt", "ưu",
+                    "ừu", "ửu", "ữu", "ứu", "ựu", "y", "ỳ", "ỷ", "ỹ", "ý", "ỵ", "ỳa", "ỷa", "ỹa", "ýa", "ỵa"
+                ],
+                cvn: ["a", "al", "az", "as", "aj", "ar", "oa", "oal", "oaz", "oas", "oaj", "oar", "oal", "oaz", "oas",
+                    "oaj", "oar", "osj", "osr", "oakj", "oakr", "ojp", "ojl", "ojz", "ojs", "ojj", "ojr", "owp",
+                    "owl", "owz", "ows", "owj", "owr", "ofj", "ofr", "odj", "odr", "adx", "adh", "asx", "ash",
+                    "alo", "alk", "alv", "alw", "alx", "alh", "avo", "avk", "avv", "avw", "avx", "avh", "azo",
+                    "azk", "azv", "azw", "azx", "azh", "ajp", "ajl", "ajz", "ajs", "ajj", "ajr", "ac", "acr",
+                    "akj", "akr", "ai", "ail", "aiz", "ais", "aij", "air", "am", "aml", "amz", "ams", "amj",
+                    "amr", "an", "anl", "anz", "ans", "anj", "anr", "olp", "oll", "olz", "ols", "olj", "olr",
+                    "oahp", "oahl", "oahz", "oahs", "oahj", "oahr", "agp", "agl", "agz", "ags", "agj", "agr",
+                    "ozp", "ozl", "ozz", "ozs", "ozj", "ozr", "ahp", "ahl", "ahz", "ahs", "ahj", "ahr", "ao",
+                    "aol", "aoz", "aos", "aoj", "aor", "ap", "apr", "at", "atr", "au", "aul", "auz", "auj",
+                    "aur", "ay", "ayl", "ayz", "ays", "ayj", "ayr", "acx", "ach", "amo", "amk", "amv", "amw",
+                    "amx", "amh", "ano", "ank", "anv", "anw", "anx", "anh", "ago", "agk", "agv", "agw", "agx",
+                    "agh", "apx", "aph", "atx", "ath", "acb", "acf", "amy", "amd", "amq", "amg", "amb", "amf",
+                    "any", "and", "anq", "ang", "anb", "anf", "agy", "agd", "agq", "agg", "agb", "agf", "aly",
+                    "ald", "alq", "alg", "alb", "alf", "azy", "azd", "azq", "azg", "azb", "azf", "apb", "apf",
+                    "atb", "atf", "adb", "adf", "auy", "aud", "auq", "aug", "aub", "auf", "ayy", "ayd", "ayq",
+                    "ayg", "ayb", "ayf", "ajy", "ajd", "ajq", "ajg", "ajb", "ajf", "e", "el", "ez", "es", "ej",
+                    "er", "oe", "oel", "oez", "oes", "oej", "oer", "ec", "ecr", "em", "eml", "emz", "ems",
+                    "emj", "emr", "en", "enl", "enz", "ens", "enj", "enr", "elp", "ell", "elz", "els", "elj",
+                    "elr", "egp", "egl", "egz", "egs", "egj", "egr", "eo", "eol", "eoz", "eos", "eoj", "eor",
+                    "ewp", "ewl", "ewz", "ews", "ewj", "ewr", "ep", "epr", "et", "etr", "edj", "edr", "ey",
+                    "ed", "eq", "eg", "eb", "ef", "uey", "ued", "ueq", "ueg", "ueb", "uef", "ekb", "ekf",
+                    "uekb", "uekf", "emy", "emd", "emq", "emg", "emb", "emf", "eny", "end", "enq", "eng",
+                    "enb", "enf", "ehy", "ehd", "ehq", "ehg", "ehb", "ehf", "uehy", "uehd", "uehq", "uehg",
+                    "uehb", "uehf", "epb", "epf", "etb", "etf", "euy", "eud", "euq", "eug", "eub", "euf",
+                    "i", "il", "iz", "is", "ij", "ir", "y", "yl", "yz", "ys", "yj", "yr", "yl", "yz", "ys",
+                    "yj", "yr", "ia", "ial", "iaz", "ias", "iaj", "iar", "ya", "ic", "ikj", "ikr", "ykj",
+                    "ykr", "isb", "isf", "ivy", "ivd", "ivq", "ivg", "ivb", "ivf", "ily", "ild", "ilq", "ilg",
+                    "ilb", "ilf", "yly", "yld", "ylq", "ylg", "ylb", "ylf", "izy", "izd", "izq", "izg", "izb",
+                    "izf", "ifb", "iff", "idb", "idf", "ydb", "ydf", "iwy", "iwd", "iwq", "iwg", "iwb", "iwf",
+                    "idb", "idf", "ily", "ild", "ilq", "ilg", "ilb", "ilf", "ivy", "ivd", "ivq", "ivg", "ivb",
+                    "ivf", "izy", "izd", "izq", "izg", "izb", "izf", "iwy", "iwd", "iwq", "iwg", "iwb", "iwf",
+                    "im", "iml", "imz", "ims", "imj", "imr", "in", "inl", "inz", "ins", "inj", "inr", "ihp",
+                    "ihl", "ihz", "ihs", "ihj", "ihr", "yhp", "yhl", "yhz", "yhs", "yhj", "yhr", "ip", "ipr",
+                    "yp", "ypr", "it", "itr", "yt", "ytr", "iu", "iul", "iuz", "ius", "iuj", "iur", "yu",
+                    "yul", "yuz", "yus", "yuj", "yur", "ynl", "ynz", "yns", "ynj", "ynr", "o", "ol", "oz",
+                    "os", "oj", "or", "oc", "ocr", "oi", "oil", "oiz", "ois", "oij", "oir", "om", "oml",
+                    "omz", "oms", "omj", "omr", "on", "onl", "onz", "ons", "onj", "onr", "ogp", "ogl", "ogz",
+                    "ogs", "ogj", "ogr", "ooc", "oog", "oogl", "oogz", "oogs", "oogj", "oogl", "oogr", "op",
+                    "opr", "ot", "otr", "oy", "od", "oq", "og", "ob", "of", "ocb", "ocf", "oiy", "oid", "oiq",
+                    "oig", "oib", "oif", "omy", "omd", "omq", "omg", "omb", "omf", "ony", "ond", "onq", "ong",
+                    "onb", "onf", "ogy", "ogd", "ogq", "ogg", "ogb", "ogf", "opb", "opf", "otb", "otf", "oo",
+                    "ok", "ov", "ow", "ox", "oh", "oio", "oik", "oiv", "oiw", "oix", "oih", "omo", "omk",
+                    "omv", "omw", "omx", "omh", "ono", "onk", "onv", "onw", "onx", "onh", "ogo", "ogk", "ogv",
+                    "ogw", "ogx", "ogh", "opx", "oph", "otx", "oth", "u", "ul", "uz", "us", "uj", "ur", "ua",
+                    "ual", "uaz", "uas", "uaj", "uar", "uc", "ucr", "ui", "uil", "uiz", "uis", "uij", "uir",
+                    "um", "uml", "umz", "ums", "umj", "umr", "un", "unl", "unz", "uns", "unj", "unr", "ugp",
+                    "ugl", "ugz", "ugs", "ugj", "ugr", "uoo", "uok", "uov", "uow", "uox", "uoh", "olo", "olk",
+                    "olv", "olw", "olx", "olh", "odx", "odh", "usb", "usf", "ujy", "ujd", "ujq", "ujg", "ujb",
+                    "ujf", "uvy", "uvd", "uvq", "uvg", "uvb", "uvf", "uly", "uld", "ulq", "ulg", "ulb", "ulf",
+                    "uzy", "uzd", "uzq", "uzg", "uzb", "uzf", "udb", "udf", "ufb", "uff", "up", "upr", "ut",
+                    "utr", "uo", "uk", "uv", "uw", "ux", "uh", "uao", "uak", "uav", "uaw", "uax", "uah",
+                    "ucx", "uch", "uio", "uik", "uiv", "uiw", "uix", "uih", "umo", "umk", "umv", "umw", "umx",
+                    "umh", "uno", "unk", "unv", "unw", "unx", "unh", "ugo", "ugk", "ugv", "ugw", "ugx", "ugh",
+                    "usx", "ush", "ujo", "ujk", "ujv", "ujw", "ujx", "ujh", "uvo", "uvk", "uvv", "uvw", "uvx",
+                    "uvh", "ulo", "ulk", "ulv", "ulw", "ulx", "ulh", "uzo", "uzk", "uzv", "uzw", "uzx", "uzh",
+                    "ufx", "ufh", "udx", "udh", "uwo", "uwk", "uwv", "uww", "uwx", "uwh", "utx", "uth", "uuo",
+                    "uuk", "uuv", "uuw", "uux", "uuh", "i", "il", "iz", "is", "ij", "ir", "ial", "iaz", "ias",
+                    "iaj", "iar"
+                ],
+                cvss: ["a", "al", "az", "as", "aj", "ar", "oa", "oal", "oaz", "oas", "oaj", "oar", "oal", "oaz", "oas",
+                    "oaj", "oar", "osj", "osr", "oakj", "oakr", "ojp", "ojl", "ojz", "ojs", "ojj", "ojr", "owp",
+                    "owl", "owz", "ows", "owj", "owr", "ofj", "ofr", "odj", "odr", "adx", "adh", "asx", "ash",
+                    "alo", "alk", "alv", "alw", "alx", "alh", "avo", "avk", "avv", "avw", "avx", "avh", "azo",
+                    "azk", "azv", "azw", "azx", "azh", "ajp", "ajl", "ajz", "ajs", "ajj", "ajr", "ac", "acr",
+                    "akj", "akr", "ai", "ail", "aiz", "ais", "aij", "air", "am", "aml", "amz", "ams", "amj",
+                    "amr", "an", "anl", "anz", "ans", "anj", "anr", "olp", "oll", "olz", "ols", "olj", "olr",
+                    "oahp", "oahl", "oahz", "oahs", "oahj", "oahr", "agp", "agl", "agz", "ags", "agj", "agr",
+                    "ozp", "ozl", "ozz", "ozs", "ozj", "ozr", "ahp", "ahl", "ahz", "ahs", "ahj", "ahr", "ao",
+                    "aol", "aoz", "aos", "aoj", "aor", "ap", "apr", "at", "atr", "au", "aul", "auz", "auj",
+                    "aur", "ay", "ayl", "ayz", "ays", "ayj", "ayr", "acx", "ach", "amo", "amk", "amv", "amw",
+                    "amx", "amh", "ano", "ank", "anv", "anw", "anx", "anh", "ago", "agk", "agv", "agw", "agx",
+                    "agh", "apx", "aph", "atx", "ath", "acb", "acf", "amy", "amd", "amq", "amg", "amb", "amf",
+                    "any", "and", "anq", "ang", "anb", "anf", "agy", "agd", "agq", "agg", "agb", "agf", "aly",
+                    "ald", "alq", "alg", "alb", "alf", "azy", "azd", "azq", "azg", "azb", "azf", "apb", "apf",
+                    "atb", "atf", "adb", "adf", "auy", "aud", "auq", "aug", "aub", "auf", "ayy", "ayd", "ayq",
+                    "ayg", "ayb", "ayf", "ajy", "ajd", "ajq", "ajg", "ajb", "ajf", "e", "el", "ez", "es", "ej",
+                    "er", "oe", "oel", "oez", "oes", "oej", "oer", "ec", "ecr", "em", "eml", "emz", "ems",
+                    "emj", "emr", "en", "enl", "enz", "ens", "enj", "enr", "elp", "ell", "elz", "els", "elj",
+                    "elr", "egp", "egl", "egz", "egs", "egj", "egr", "eo", "eol", "eoz", "eos", "eoj", "eor",
+                    "ewp", "ewl", "ewz", "ews", "ewj", "ewr", "ep", "epr", "et", "etr", "edj", "edr", "ey",
+                    "ed", "eq", "eg", "eb", "ef", "uey", "ued", "ueq", "ueg", "ueb", "uef", "ekb", "ekf",
+                    "uekb", "uekf", "emy", "emd", "emq", "emg", "emb", "emf", "eny", "end", "enq", "eng",
+                    "enb", "enf", "ehy", "ehd", "ehq", "ehg", "ehb", "ehf", "uehy", "uehd", "uehq", "uehg",
+                    "uehb", "uehf", "epb", "epf", "etb", "etf", "euy", "eud", "euq", "eug", "eub", "euf",
+                    "i", "il", "iz", "is", "ij", "ir", "y", "yl", "yz", "ys", "yj", "yr", "yl", "yz", "ys",
+                    "yj", "yr", "ia", "ial", "iaz", "ias", "iaj", "iar", "ya", "ic", "ikj", "ikr", "ykj",
+                    "ykr", "isb", "isf", "ivy", "ivd", "ivq", "ivg", "ivb", "ivf", "ily", "ild", "ilq", "ilg",
+                    "ilb", "ilf", "yly", "yld", "ylq", "ylg", "ylb", "ylf", "izy", "izd", "izq", "izg", "izb",
+                    "izf", "ifb", "iff", "idb", "idf", "ydb", "ydf", "iwy", "iwd", "iwq", "iwg", "iwb", "iwf",
+                    "idb", "idf", "ily", "ild", "ilq", "ilg", "ilb", "ilf", "ivy", "ivd", "ivq", "ivg", "ivb",
+                    "ivf", "izy", "izd", "izq", "izg", "izb", "izf", "iwy", "iwd", "iwq", "iwg", "iwb", "iwf",
+                    "im", "iml", "imz", "ims", "imj", "imr", "in", "inl", "inz", "ins", "inj", "inr", "ihp",
+                    "ihl", "ihz", "ihs", "ihj", "ihr", "yhp", "yhl", "yhz", "yhs", "yhj", "yhr", "ip", "ipr",
+                    "yp", "ypr", "it", "itr", "yt", "ytr", "iu", "iul", "iuz", "ius", "iuj", "iur", "yu",
+                    "yul", "yuz", "yus", "yuj", "yur", "ynl", "ynz", "yns", "ynj", "ynr", "o", "ol", "oz",
+                    "os", "oj", "or", "oc", "ocr", "oi", "oil", "oiz", "ois", "oij", "oir", "om", "oml",
+                    "omz", "oms", "omj", "omr", "on", "onl", "onz", "ons", "onj", "onr", "ogp", "ogl", "ogz",
+                    "ogs", "ogj", "ogr", "ooc", "oog", "oogl", "oogz", "oogs", "oogj", "oogl", "oogr", "op",
+                    "opr", "ot", "otr", "oy", "od", "oq", "og", "ob", "of", "ocb", "ocf", "oiy", "oid", "oiq",
+                    "oig", "oib", "oif", "omy", "omd", "omq", "omg", "omb", "omf", "ony", "ond", "onq", "ong",
+                    "onb", "onf", "ogy", "ogd", "ogq", "ogg", "ogb", "ogf", "opb", "opf", "otb", "otf", "oo",
+                    "ok", "ov", "ow", "ox", "oh", "oio", "oik", "oiv", "oiw", "oix", "oih", "omo", "omk",
+                    "omv", "omw", "omx", "omh", "ono", "onk", "onv", "onw", "onx", "onh", "ogo", "ogk", "ogv",
+                    "ogw", "ogx", "ogh", "opx", "oph", "otx", "oth", "u", "ul", "uz", "us", "uj", "ur", "ua",
+                    "ual", "uaz", "uas", "uaj", "uar", "uc", "ucr", "ui", "uil", "uiz", "uis", "uij", "uir",
+                    "um", "uml", "umz", "ums", "umj", "umr", "un", "unl", "unz", "uns", "unj", "unr", "ugp",
+                    "ugl", "ugz", "ugs", "ugj", "ugr", "uoo", "uok", "uov", "uow", "uox", "uoh", "olo", "olk",
+                    "olv", "olw", "olx", "olh", "odx", "odh", "usb", "usf", "ujy", "ujd", "ujq", "ujg", "ujb",
+                    "ujf", "uvy", "uvd", "uvq", "uvg", "uvb", "uvf", "uly", "uld", "ulq", "ulg", "ulb", "ulf",
+                    "uzy", "uzd", "uzq", "uzg", "uzb", "uzf", "udb", "udf", "ufb", "uff", "up", "upr", "ut",
+                    "utr", "uo", "uk", "uv", "uw", "ux", "uh", "uao", "uak", "uav", "uaw", "uax", "uah",
+                    "ucx", "uch", "uio", "uik", "uiv", "uiw", "uix", "uih", "umo", "umk", "umv", "umw", "umx",
+                    "umh", "uno", "unk", "unv", "unw", "unx", "unh", "ugo", "ugk", "ugv", "ugw", "ugx", "ugh",
+                    "usx", "ush", "ujo", "ujk", "ujv", "ujw", "ujx", "ujh", "uvo", "uvk", "uvv", "uvw", "uvx",
+                    "uvh", "ulo", "ulk", "ulv", "ulw", "ulx", "ulh", "uzo", "uzk", "uzv", "uzw", "uzx", "uzh",
+                    "ufx", "ufh", "udx", "udh", "uwo", "uwk", "uwv", "uww", "uwx", "uwh", "utx", "uth", "uuo",
+                    "uuk", "uuv", "uuw", "uux", "uuh", "i", "il", "iz", "is", "ij", "ir", "ial", "iaz", "ias",
+                    "iaj", "iar"
+                ]
+            };
+            const BASE_VOWEL_GROUPS = ["aàảãáạ", "ăằẳẵắặ", "âầẩẫấậ", "eèẻẽéẹ", "êềểễếệ", "iìỉĩíị", "oòỏõóọ", "ôồổỗốộ",
+                "ơờởỡớợ", "uùủũúụ", "ưừửữứự", "yỳỷỹýỵ"
+            ];
+            const SPECIAL_CHARS = Object.freeze(["`", "“", "”", "<", ">", "@", "-", ";", "=", "…", " ", ",", ".", "?", "!",
+                '"', "'", "(", ")", "[", "]", "{", "}", "%", "#", "$", "&", "_", "\\", "/", "*", ":", "+", "~", "^",
+                "|", "\r\n", "\r", "\n"
+            ]);
+            const CVN_INITIALS = Object.freeze([
+                ["ngh", "w"],
+                ["ng", "w"],
+                ["ph", "f"],
+                ["qu", "q"],
+                ["kh", "k"],
+                ["gi", "j"],
+                ["gh", "g"],
+                ["k", "c"],
+                ["d", "z"],
+                ["đ", "d"],
+                ["ch", "ch"],
+                ["nh", "nh"],
+                ["th", "th"],
+                ["tr", "tr"],
+                ["b", "b"],
+                ["c", "c"],
+                ["g", "g"],
+                ["h", "h"],
+                ["l", "l"],
+                ["m", "m"],
+                ["n", "n"],
+                ["r", "r"],
+                ["s", "s"],
+                ["t", "t"],
+                ["v", "v"],
+                ["x", "x"]
+            ].sort((a, b) => b[0].length - a[0].length));
+            const CVN_CODE_INITIALS = Object.freeze([...new Set(CVN_INITIALS.map(([, c]) => c))].sort((a, b) => b.length - a
+            .length));
+            const CQN_TO_CVN_INITIAL = new Map(CVN_INITIALS.map(([c, v]) => [c, v]));
+            const I_TO_Y = new Map([
+                ["i", "y"],
+                ["ì", "ỳ"],
+                ["ỉ", "ỷ"],
+                ["ĩ", "ỹ"],
+                ["í", "ý"],
+                ["ị", "ỵ"]
+            ]);
+            const Y_TO_I = new Map([...I_TO_Y].map(([i, y]) => [y, i]));
+            const BASE_CACHE = new Map();
+
+            function getBaseVowel(ch = "") {
+                if (!ch) return "";
+                if (BASE_CACHE.has(ch)) return BASE_CACHE.get(ch);
+                const lower = ch.toLowerCase();
+                for (const g of BASE_VOWEL_GROUPS)
+                    if (g.includes(lower)) { BASE_CACHE.set(ch, g[0]); return g[0]; }
+                BASE_CACHE.set(ch, lower);
+                return lower;
+            }
+
+            function buildMap(from, to) {
+                const m = new Map();
+                for (let i = 0; i < from.length; i++) m.set(from[i], to[i]);
+                return m;
+            }
+            const VOWEL = Object.freeze({
+                cqnToCvn: buildMap(vwl.cqn, vwl.cvn),
+                cqnToCvss: buildMap(vwl.cqn, vwl.cvss),
+                cvnToCqn: buildMap(vwl.cvn, vwl.cqn),
+                cvnToCvss: buildMap(vwl.cvn, vwl.cvss),
+                cvssToCqn: buildMap(vwl.cvss, vwl.cqn),
+                cvssToCvn: buildMap(vwl.cvss, vwl.cvn)
+            });
+            const PATCH = [
+                ["uyêt", "ydy"],
+                ["uyết", "ydb"],
+                ["uyềt", "ydd"],
+                ["uyểt", "ydq"],
+                ["uyễt", "ydg"],
+                ["uyệt", "ydf"],
+                ["uyên", "yly"],
+                ["uyến", "ylb"],
+                ["uyền", "yld"],
+                ["uyển", "ylq"],
+                ["uyễn", "ylg"],
+                ["uyện", "ylf"],
+                ["iêt", "idy"],
+                ["iết", "idb"],
+                ["iềt", "idd"],
+                ["iểt", "idq"],
+                ["iễt", "idg"],
+                ["iệt", "idf"],
+                ["iêp", "ify"],
+                ["iếp", "ifb"],
+                ["iềp", "ifd"],
+                ["iểp", "ifq"],
+                ["iễp", "ifg"],
+                ["iệp", "iff"],
+                ["iêc", "isy"],
+                ["iếc", "isb"],
+                ["iềc", "isd"],
+                ["iểc", "isq"],
+                ["iễc", "isg"],
+                ["iệc", "isf"],
+                ["iên", "ily"],
+                ["iến", "ilb"],
+                ["iền", "ild"],
+                ["iển", "ilq"],
+                ["iễn", "ilg"],
+                ["iện", "ilf"],
+                ["iêm", "ivy"],
+                ["iếm", "ivb"],
+                ["iềm", "ivd"],
+                ["iểm", "ivq"],
+                ["iễm", "ivg"],
+                ["iệm", "ivf"],
+                ["iêng", "izy"],
+                ["iếng", "izb"],
+                ["iềng", "izd"],
+                ["iểng", "izq"],
+                ["iễng", "izg"],
+                ["iệng", "izf"],
+                ["iêu", "iwy"],
+                ["iếu", "iwb"],
+                ["iều", "iwd"],
+                ["iểu", "iwq"],
+                ["iễu", "iwg"],
+                ["iệu", "iwf"],
+                ["yêt", "idy"],
+                ["yết", "idb"],
+                ["yềt", "idd"],
+                ["yểt", "idq"],
+                ["yễt", "idg"],
+                ["yệt", "idf"],
+                ["yên", "ily"],
+                ["yến", "ilb"],
+                ["yền", "ild"],
+                ["yển", "ilq"],
+                ["yễn", "ilg"],
+                ["yện", "ilf"],
+                ["yêm", "ivy"],
+                ["yếm", "ivb"],
+                ["yềm", "ivd"],
+                ["yểm", "ivq"],
+                ["yễm", "ivg"],
+                ["yệm", "ivf"],
+                ["yêng", "izy"],
+                ["yếng", "izb"],
+                ["yềng", "izd"],
+                ["yểng", "izq"],
+                ["yễng", "izg"],
+                ["yệng", "izf"],
+                ["yêu", "iwy"],
+                ["yếu", "iwb"],
+                ["yều", "iwd"],
+                ["yểu", "iwq"],
+                ["yễu", "iwg"],
+                ["yệu", "iwf"],
+                ["uôt", "udy"],
+                ["uốt", "udb"],
+                ["uồt", "udd"],
+                ["uổt", "udq"],
+                ["uỗt", "udg"],
+                ["uột", "udf"],
+                ["uôc", "usy"],
+                ["uốc", "usb"],
+                ["uồc", "usd"],
+                ["uổc", "usq"],
+                ["uỗc", "usg"],
+                ["uộc", "usf"],
+                ["uôn", "uly"],
+                ["uốn", "ulb"],
+                ["uồn", "uld"],
+                ["uổn", "ulq"],
+                ["uỗn", "ulg"],
+                ["uộn", "ulf"],
+                ["uôm", "uvy"],
+                ["uốm", "uvb"],
+                ["uồm", "uvd"],
+                ["uổm", "uvq"],
+                ["uỗm", "uvg"],
+                ["uộm", "uvf"],
+                ["uông", "uzy"],
+                ["uống", "uzb"],
+                ["uồng", "uzd"],
+                ["uổng", "uzq"],
+                ["uỗng", "uzg"],
+                ["uộng", "uzf"],
+                ["uôi", "ujy"],
+                ["uối", "ujb"],
+                ["uồi", "ujd"],
+                ["uổi", "ujq"],
+                ["uỗi", "ujg"],
+                ["uội", "ujf"],
+                ["ươt", "udo"],
+                ["ướt", "udx"],
+                ["ườt", "udk"],
+                ["ưởt", "udv"],
+                ["ưỡt", "udw"],
+                ["ượt", "udh"],
+                ["ươp", "ufo"],
+                ["ướp", "ufx"],
+                ["ườp", "ufk"],
+                ["ưởp", "ufv"],
+                ["ưỡp", "ufw"],
+                ["ượp", "ufh"],
+                ["ươc", "uso"],
+                ["ước", "usx"],
+                ["ườc", "usk"],
+                ["ưởc", "usv"],
+                ["ưỡc", "usw"],
+                ["ược", "ush"],
+                ["ươn", "ulo"],
+                ["ướn", "ulx"],
+                ["ườn", "ulk"],
+                ["ưởn", "ulv"],
+                ["ưỡn", "ulw"],
+                ["ượn", "ulh"],
+                ["ươm", "uvo"],
+                ["ướm", "uvx"],
+                ["ườm", "uvk"],
+                ["ưởm", "uvv"],
+                ["ưỡm", "uvw"],
+                ["ượm", "uvh"],
+                ["ương", "uzo"],
+                ["ướng", "uzx"],
+                ["ường", "uzk"],
+                ["ưởng", "uzv"],
+                ["ưỡng", "uzw"],
+                ["ượng", "uzh"],
+                ["ươu", "uwo"],
+                ["ướu", "uwx"],
+                ["ườu", "uwk"],
+                ["ưởu", "uwv"],
+                ["ưỡu", "uww"],
+                ["ượu", "uwh"],
+                ["ươi", "ujo"],
+                ["ưới", "ujx"],
+                ["ười", "ujk"],
+                ["ưởi", "ujv"],
+                ["ưỡi", "ujw"],
+                ["ượi", "ujh"],
+                ["uât", "ady"],
+                ["uất", "adb"],
+                ["uầt", "add"],
+                ["uẩt", "adq"],
+                ["uẫt", "adg"],
+                ["uật", "adf"],
+                ["uân", "aly"],
+                ["uấn", "alb"],
+                ["uần", "ald"],
+                ["uẩn", "alq"],
+                ["uẫn", "alg"],
+                ["uận", "alf"],
+                ["uâng", "azy"],
+                ["uấng", "azb"],
+                ["uầng", "azd"],
+                ["uẩng", "azq"],
+                ["uẫng", "azg"],
+                ["uậng", "azf"],
+                ["uây", "ajy"],
+                ["uấy", "ajb"],
+                ["uầy", "ajd"],
+                ["uẩy", "ajq"],
+                ["uẫy", "ajg"],
+                ["uậy", "ajf"],
+                ["uơt", "odo"],
+                ["uớt", "odx"],
+                ["uờt", "odk"],
+                ["uởt", "odv"],
+                ["uỡt", "odw"],
+                ["uợt", "odh"],
+                ["uơn", "olo"],
+                ["uớn", "olx"],
+                ["uờn", "olk"],
+                ["uởn", "olv"],
+                ["uỡn", "olw"],
+                ["uợn", "olh"],
+                ["uơi", "ojo"],
+                ["uới", "ojx"],
+                ["uời", "ojk"],
+                ["uởi", "ojv"],
+                ["uỡi", "ojw"],
+                ["uợi", "ojh"],
+                ["oăt", "ado"],
+                ["oắt", "adx"],
+                ["oằt", "adk"],
+                ["oẳt", "adv"],
+                ["oẵt", "adw"],
+                ["oặt", "adh"],
+                ["oăp", "afo"],
+                ["oắp", "afx"],
+                ["oằp", "afk"],
+                ["oẳp", "afv"],
+                ["oẵp", "afw"],
+                ["oặp", "afh"],
+                ["oăc", "aso"],
+                ["oắc", "asx"],
+                ["oằc", "ask"],
+                ["oẳc", "asv"],
+                ["oẵc", "asw"],
+                ["oặc", "ash"],
+                ["oăn", "alo"],
+                ["oắn", "alx"],
+                ["oằn", "alk"],
+                ["oẳn", "alv"],
+                ["oẵn", "alw"],
+                ["oặn", "alh"],
+                ["oăm", "avo"],
+                ["oắm", "avx"],
+                ["oằm", "avk"],
+                ["oẳm", "avv"],
+                ["oẵm", "avw"],
+                ["oặm", "avh"],
+                ["oăng", "azo"],
+                ["oắng", "azx"],
+                ["oằng", "azk"],
+                ["oẳng", "azv"],
+                ["oẵng", "azw"],
+                ["oặng", "azh"],
+                ["oet", "ed"],
+                ["oét", "edj"],
+                ["oèt", "edl"],
+                ["oẻt", "edz"],
+                ["oẽt", "eds"],
+                ["oẹt", "edr"],
+                ["oen", "elp"],
+                ["oén", "elj"],
+                ["oèn", "ell"],
+                ["oẻn", "elz"],
+                ["oẽn", "els"],
+                ["oẹn", "elr"],
+                ["oem", "evp"],
+                ["oém", "evj"],
+                ["oèm", "evl"],
+                ["oẻm", "evz"],
+                ["oẽm", "evs"],
+                ["oẹm", "evr"],
+                ["oeo", "ewp"],
+                ["oéo", "ewj"],
+                ["oèo", "ewl"],
+                ["oẻo", "ewz"],
+                ["oẽo", "ews"],
+                ["oẹo", "ewr"],
+                ["oat", "od"],
+                ["oát", "odj"],
+                ["oàt", "odl"],
+                ["oảt", "odz"],
+                ["oãt", "ods"],
+                ["oạt", "odr"],
+                ["oap", "of"],
+                ["oáp", "ofj"],
+                ["oàp", "ofl"],
+                ["oảp", "ofz"],
+                ["oãp", "ofs"],
+                ["oạp", "ofr"],
+                ["oac", "os"],
+                ["oác", "osj"],
+                ["oàc", "osl"],
+                ["oảc", "osz"],
+                ["oãc", "oss"],
+                ["oạc", "osr"],
+                ["oan", "olp"],
+                ["oán", "olj"],
+                ["oàn", "oll"],
+                ["oản", "olz"],
+                ["oãn", "ols"],
+                ["oạn", "olr"],
+                ["oam", "ovp"],
+                ["oám", "ovj"],
+                ["oàm", "ovl"],
+                ["oảm", "ovz"],
+                ["oãm", "ovs"],
+                ["oạm", "ovr"],
+                ["oang", "ozp"],
+                ["oáng", "ozj"],
+                ["oàng", "ozl"],
+                ["oảng", "ozz"],
+                ["oãng", "ozs"],
+                ["oạng", "ozr"],
+                ["oao", "owp"],
+                ["oáo", "owj"],
+                ["oào", "owl"],
+                ["oảo", "owz"],
+                ["oão", "ows"],
+                ["oạo", "owr"],
+                ["oai", "ojp"],
+                ["oái", "ojj"],
+                ["oài", "ojl"],
+                ["oải", "ojz"],
+                ["oãi", "ojs"],
+                ["oại", "ojr"],
+                ["oay", "ajp"],
+                ["oáy", "ajj"],
+                ["oày", "ajl"],
+                ["oảy", "ajz"],
+                ["oãy", "ajs"],
+                ["oạy", "ajr"]
+            ];
+            for (const [c, v] of PATCH) { VOWEL.cqnToCvn.set(c, v);
+                VOWEL.cqnToCvss.set(c, v); if (!VOWEL.cvnToCvss.has(v)) VOWEL.cvnToCvss.set(v, v);
+                VOWEL.cvssToCvn.set(v, v);
+                VOWEL.cvnToCqn.set(v, c);
+                VOWEL.cvssToCqn.set(v, c); }
+            const EXTRA = [
+                ["oec", "es"],
+                ["oéc", "esj"],
+                ["oèc", "esl"],
+                ["oẻc", "esz"],
+                ["oẽc", "ess"],
+                ["oẹc", "esr"],
+                ["oeng", "ezp"],
+                ["oéng", "ezj"],
+                ["oèng", "ezl"],
+                ["oẻng", "ezz"],
+                ["oẽng", "ezs"],
+                ["oẹng", "ezr"]
+            ];
+            for (const [c, v] of EXTRA) { VOWEL.cqnToCvn.set(c, v);
+                VOWEL.cqnToCvss.set(c, v);
+                VOWEL.cvnToCvss.set(v, v);
+                VOWEL.cvssToCvn.set(v, v);
+                VOWEL.cvnToCqn.set(v, c);
+                VOWEL.cvssToCqn.set(v, c); }
+            const REV_PREF = [
+                ["idy", "iêt"],
+                ["idb", "iết"],
+                ["idd", "iềt"],
+                ["idq", "iểt"],
+                ["idg", "iễt"],
+                ["idf", "iệt"],
+                ["ify", "iêp"],
+                ["ifb", "iếp"],
+                ["ifd", "iềp"],
+                ["ifq", "iểp"],
+                ["ifg", "iễp"],
+                ["iff", "iệp"],
+                ["isy", "iêc"],
+                ["isb", "iếc"],
+                ["isd", "iềc"],
+                ["isq", "iểc"],
+                ["isg", "iễc"],
+                ["isf", "iệc"],
+                ["ily", "iên"],
+                ["ilb", "iến"],
+                ["ild", "iền"],
+                ["ilq", "iển"],
+                ["ilg", "iễn"],
+                ["ilf", "iện"],
+                ["ivy", "iêm"],
+                ["ivb", "iếm"],
+                ["ivd", "iềm"],
+                ["ivq", "iểm"],
+                ["ivg", "iễm"],
+                ["ivf", "iệm"],
+                ["izy", "iêng"],
+                ["izb", "iếng"],
+                ["izd", "iềng"],
+                ["izq", "iểng"],
+                ["izg", "iễng"],
+                ["izf", "iệng"],
+                ["iwy", "iêu"],
+                ["iwb", "iếu"],
+                ["iwd", "iều"],
+                ["iwq", "iểu"],
+                ["iwg", "iễu"],
+                ["iwf", "iệu"]
+            ];
+            for (const [c, v] of REV_PREF) { VOWEL.cvnToCqn.set(c, v);
+                VOWEL.cvssToCqn.set(c, v); }
+
+            function isAllUpper(w) { return /\p{L}/u.test(w) && w === w.toLocaleUpperCase("vi-VN"); }
+
+            function applyCase(src, val) {
+                if (!val) return val;
+                if (isAllUpper(src)) return val.toLocaleUpperCase("vi-VN");
+                if (src[0] === src[0].toLocaleUpperCase("vi-VN") && src[0] !== src[0].toLocaleLowerCase("vi-VN"))
+                    return val[0].toLocaleUpperCase("vi-VN") + val.slice(1);
+                return val;
+            }
+
+            function tokenize(inp) { return String(inp ?? "").normalize("NFC").match(/[\p{L}]+|[^\p{L}]+/gu) || []; }
+
+            function splitCqnWord(w) {
+                const l = w.toLocaleLowerCase("vi-VN").normalize("NFC");
+                for (const [init] of CVN_INITIALS)
+                    if (l.startsWith(init)) return { initial: init, vowel: l.slice(init.length) };
+                return { initial: "", vowel: l };
+            }
+
+            function normalizeCqnParts(initial, vowel) {
+                let o = initial,
+                    v = vowel;
+                if (o === "gi" && v !== "a" && VOWEL.cqnToCvn.has("i" + v)) v = "i" + v;
+                if (o === "qu" && getBaseVowel(v[0]) === "y") v = "u" + v;
+                if (o === "g" && getBaseVowel(v[0]) === "i") o = "gi";
+                if (o === "g" && "eê".includes(getBaseVowel(v[0]))) o = "gh";
+                if (o === "c" && "iêe".includes(getBaseVowel(v[0]))) o = "k";
+                if (o === "ng" && "iêe".includes(getBaseVowel(v[0]))) o = "ngh";
+                return { initial: o, vowel: v };
+            }
+
+            function restoreCqnInitial(cvnInit, cqnVowel) {
+                const b = getBaseVowel(cqnVowel[0]);
+                if (cvnInit === "q") return "qu";
+                if (cvnInit === "j") return "gi";
+                if (cvnInit === "z") return "d";
+                if (cvnInit === "d") return "đ";
+                if (cvnInit === "f") return "ph";
+                if (cvnInit === "k") return "kh";
+                if (cvnInit === "w") return "iêe".includes(b) ? "ngh" : "ng";
+                if (cvnInit === "g") return "iêe".includes(b) ? "gh" : "g";
+                if (cvnInit === "c") return "iêe".includes(b) ? "k" : "c";
+                return cvnInit;
+            }
+
+            function cleanCqnAfterJoin(initial, vowel) {
+                let o = initial,
+                    v = vowel;
+                if (!o && I_TO_Y.has(v[0]) && !v.startsWith("ia")) v = I_TO_Y.get(v[0]) + v.slice(1);
+                if (o === "gi" && getBaseVowel(v[0]) === "i") {
+                    if (/^[iìỉĩíị](?:m|n|p|t|c|ch|ng|nh)?$/u.test(v)) return "g" + v;
+                    v = v.slice(1) || v;
+                }
+                if (o === "qu" && getBaseVowel(v[0]) === "u" && v.length > 1) v = v.slice(1);
+                return o + v;
+            }
+
+            function cqnToCvnAndCvss(w) {
+                const { initial, vowel } = normalizeCqnParts(...Object.values(splitCqnWord(w)));
+                const ci = CQN_TO_CVN_INITIAL.get(initial) ?? initial;
+                const cv = VOWEL.cqnToCvn.get(vowel) ?? vowel;
+                const cs = VOWEL.cqnToCvss.get(vowel) ?? cv;
+                return { cqn: applyCase(w, w.normalize("NFC")), cvn: applyCase(w, ci + cv), cvss: applyCase(w, ci + cs) };
+            }
+
+            function splitCodeWord(w, vm) {
+                const l = w.toLocaleLowerCase("vi-VN").normalize("NFC");
+                if (vm.has(l)) return { initial: "", codeVowel: l };
+                for (const init of CVN_CODE_INITIALS) {
+                    if (!l.startsWith(init)) continue;
+                    const r = l.slice(init.length);
+                    if (r && vm.has(r)) return { initial: init, codeVowel: r };
+                }
+                for (const init of CVN_CODE_INITIALS) {
+                    if (l.startsWith(init)) return { initial: init, codeVowel: l.slice(init.length) };
+                }
+                return { initial: "", codeVowel: l };
+            }
+
+            function codeToCqnAndOther(w, src) {
+                const isCs = src === "cvss";
+                const toCqn = isCs ? VOWEL.cvssToCqn : VOWEL.cvnToCqn;
+                const toOther = isCs ? VOWEL.cvssToCvn : VOWEL.cvnToCvss;
+                const { initial, codeVowel } = splitCodeWord(w, toCqn);
+                const cqnV = toCqn.get(codeVowel) ?? codeVowel;
+                const otherV = toOther.get(codeVowel) ?? codeVowel;
+                const ci = restoreCqnInitial(initial, cqnV);
+                const cqn = cleanCqnAfterJoin(ci, cqnV);
+                const orig = initial + codeVowel;
+                const other = initial + otherV;
+                if (isCs) return { cqn: applyCase(w, cqn), cvn: applyCase(w, other), cvss: applyCase(w, orig) };
+                return { cqn: applyCase(w, cqn), cvn: applyCase(w, orig), cvss: applyCase(w, other) };
+            }
+
+            function cvnToCqnAndCvss(w) { return codeToCqnAndOther(w, "cvn"); }
+
+            function cvssToCqnAndCvn(w) { return codeToCqnAndOther(w, "cvss"); }
+
+            function convertText(inp, mode = "cqn") {
+                if (!["cqn", "cvn", "cvss"].includes(mode)) throw new Error('Mode must be "cqn","cvn","cvss"');
+                const r = { cqn: [], cvn: [], cvss: [] };
+                for (const t of tokenize(inp)) {
+                    if (!/^[\p{L}]+$/u.test(t)) { r.cqn.push(t);
+                        r.cvn.push(t);
+                        r.cvss.push(t); continue; }
+                    const c = mode === "cqn" ? cqnToCvnAndCvss(t) : mode === "cvn" ? cvnToCqnAndCvss(t) :
+                    cvssToCqnAndCvn(t);
+                    r.cqn.push(c.cqn);
+                    r.cvn.push(c.cvn);
+                    r.cvss.push(c.cvss);
+                }
+                return { cqn: r.cqn.join(""), cvn: r.cvn.join(""), cvss: r.cvss.join("") };
+            }
+            return Object.freeze({ VERSION: V, RULESET: R, convert: convertText, fromCqn: (i) => convertText(i, "cqn"),
+                fromCvn: (i) => convertText(i, "cvn"), fromCvss: (i) => convertText(i, "cvss"),
+            specialChars: SPECIAL_CHARS });
+        })();
+
+
+        // ============================================================
+        //  Base27-CVNSS4.0 v2 strict core + checksum classifier
+        //  Contract: canonical CVNSS uses A-Z and space only.
+        //  V = sentinel-safe Base27 payload, CS=(Σ(dᵢ×i) mod 97)+1 trên dãy digit Base27, T=V*100+CS.
+        // ============================================================
+        const CVNSSBase27S = (() => {
+            "use strict";
+
+            const BASE = 27n;
+            const MOD = 97n;
+            const SENTINEL = 1n;
+            const MIN_CS = 1n;
+            const MAX_CS = 97n;
+
+            function normalizeCvss(input) {
+                return String(input ?? "")
+                    .normalize("NFC")
+                    .toUpperCase()
+                    .replace(/[^A-Z ]+/g, " ")
+                    .replace(/\s+/g, " ")
+                    .trim();
+            }
+
+            function toDigit(ch) {
+                if (ch === " ") return 0n;
+                const code = ch.charCodeAt(0);
+                if (code >= 65 && code <= 90) return BigInt(code - 64);
+                throw new Error("Ký tự ngoài bảng Base27-CVNSS4.0: " + ch);
+            }
+
+            function toChar(digit) {
+                if (digit === 0n) return " ";
+                if (digit >= 1n && digit <= 26n) return String.fromCharCode(Number(digit) + 64);
+                throw new Error("Chữ số Base27-CVNSS4.0 không hợp lệ: " + digit.toString());
+            }
+
+            function checksumDigits(digits) {
+                let sum = 0n;
+                for (let i = 0; i < digits.length; i++) {
+                    const d = typeof digits[i] === "bigint" ? digits[i] : BigInt(digits[i]);
+                    if (d < 0n || d >= BASE) throw new Error("Digit Base27-CVNSS4.0 không hợp lệ khi tính checksum: " + d.toString());
+                    sum = (sum + d * BigInt(i + 1)) % MOD;
+                }
+                return sum + 1n;
+            }
+
+            function checksum(rawValueOrDigits) {
+                if (Array.isArray(rawValueOrDigits)) return checksumDigits(rawValueOrDigits);
+                let rawValue = rawValueOrDigits;
+                if (typeof rawValue !== "bigint") rawValue = BigInt(rawValue);
+                if (rawValue < SENTINEL) throw new Error("Số gốc V phải >= 1");
+                return checksumDigits(decodeRaw(rawValue).digits);
+            }
+
+            function encode(input) {
+                const canonical = normalizeCvss(input);
+                const digits = [];
+                let value = SENTINEL;
+                for (const ch of canonical) {
+                    const d = toDigit(ch);
+                    digits.push(d);
+                    value = value * BASE + d;
+                }
+                return Object.freeze({ canonical, canonicalLower: canonical.toLowerCase(), digits, value });
+            }
+
+            function seal(rawValue) {
+                if (typeof rawValue !== "bigint") rawValue = BigInt(rawValue);
+                const cs = checksum(rawValue);
+                return Object.freeze({ rawValue, checksum: cs, secured: rawValue * 100n + cs });
+            }
+
+            function cleanSecuredInput(input) {
+                return String(input ?? "").replace(/[\s_.-]+/g, "").trim();
+            }
+
+            function splitSecured(input) {
+                const s = cleanSecuredInput(input);
+                if (!s) return Object.freeze({ kind: "empty", clean: s });
+                if (!/^\d+$/.test(s)) return Object.freeze({ kind: "not_digits", clean: s, message: "Dãy số chỉ được chứa chữ số 0-9." });
+                const secured = BigInt(s);
+                const receivedChecksum = secured % 100n;
+                const rawValue = secured / 100n;
+                let expectedChecksum = null;
+                let expectedChecksumError = null;
+                if (rawValue >= SENTINEL) {
+                    try {
+                        expectedChecksum = checksum(rawValue);
+                    } catch (err) {
+                        expectedChecksumError = err.message;
+                    }
+                }
+                return Object.freeze({ kind: "candidate", clean: s, secured, rawValue, receivedChecksum, expectedChecksum, expectedChecksumError });
+            }
+
+            function decodeRaw(rawValue) {
+                if (typeof rawValue !== "bigint") rawValue = BigInt(rawValue);
+                if (rawValue < SENTINEL) throw new Error("Số gốc V phải >= 1");
+                if (rawValue === SENTINEL) return Object.freeze({ text: "", textLower: "", digits: [] });
+                const digits = [];
+                let n = rawValue;
+                while (n > SENTINEL) {
+                    const d = n % BASE;
+                    digits.push(d);
+                    n = n / BASE;
+                }
+                if (n !== SENTINEL) throw new Error("Sentinel Base27-CVNSS4.0 không hợp lệ; số không phải do bộ mã này sinh ra.");
+                digits.reverse();
+                const text = digits.map(toChar).join("");
+                return Object.freeze({ text, textLower: text.toLowerCase(), digits });
+            }
+
+            function tryDecodeRaw(rawValue) {
+                try {
+                    const decoded = decodeRaw(rawValue);
+                    return Object.freeze({ ok: true, decoded });
+                } catch (err) {
+                    return Object.freeze({ ok: false, error: err.message });
+                }
+            }
+
+            function verifySecured(input) {
+                const part = splitSecured(input);
+                if (part.kind !== "candidate") return Object.freeze({ ok: false, ...part });
+                if (part.secured < 100n) {
+                    return Object.freeze({ ok: false, ...part, kind: "missing_checksum", message: "Dãy số không hợp lệ: thiếu checksum 2 chữ số." });
+                }
+                const checksumInRange = part.receivedChecksum >= MIN_CS && part.receivedChecksum <= MAX_CS;
+                const checksumOk = checksumInRange && part.expectedChecksum !== null && part.receivedChecksum === part.expectedChecksum;
+                return Object.freeze({ ok: checksumOk, checksumInRange, ...part });
+            }
+
+            function classifySecured(input) {
+                const check = verifySecured(input);
+                if (check.kind === "empty") return check;
+                if (check.kind === "not_digits") return check;
+                if (check.kind === "missing_checksum") return check;
+
+                if (check.ok) {
+                    const rawDecoded = tryDecodeRaw(check.rawValue);
+                    if (!rawDecoded.ok) {
+                        return Object.freeze({ ...check, ok: false, kind: "bad_sentinel", message: "Dãy số không hợp lệ: checksum khớp nhưng payload không có sentinel Base27-CVNSS4.0 hợp lệ." });
+                    }
+                    return Object.freeze({ ...check, kind: "valid", decoded: rawDecoded.decoded });
+                }
+
+                // Strong warning for a raw V pasted directly without T=V*100+CS.
+                const asRaw = tryDecodeRaw(check.secured);
+                if (asRaw.ok) {
+                    const suggested = seal(check.secured);
+                    return Object.freeze({
+                        ...check,
+                        kind: "missing_checksum",
+                        decodedAsRaw: asRaw.decoded,
+                        suggestedSecured: suggested.secured,
+                        suggestedChecksum: suggested.checksum,
+                        message: "Dãy số không hợp lệ: đây là Số gốc V chưa gắn checksum. Hãy dùng Số gửi T = V×100+CS."
+                    });
+                }
+
+                if (check.expectedChecksum === null) {
+                    return Object.freeze({
+                        ...check,
+                        kind: "bad_sentinel",
+                        message: "Dãy số không hợp lệ: payload không giải được thành Base27-CVNSS4.0, nên không thể tính checksum gợi ý."
+                    });
+                }
+
+                return Object.freeze({
+                    ...check,
+                    kind: "checksum_error",
+                    message: "Checksum sai. Nhận " + check.receivedChecksum.toString() + ", gợi ý " + check.expectedChecksum.toString() + "."
+                });
+            }
+
+            function decodeSecured(input) {
+                const classified = classifySecured(input);
+                if (classified.kind !== "valid") {
+                    throw new Error(classified.message || "Dãy số không hợp lệ.");
+                }
+                return Object.freeze({ ...classified, ...classified.decoded });
+            }
+
+            return Object.freeze({
+                BASE, MOD, SENTINEL,
+                normalizeCvss, toDigit, toChar, checksum, checksumDigits,
+                encode, seal, cleanSecuredInput, splitSecured,
+                decodeRaw, tryDecodeRaw, verifySecured, classifySecured, decodeSecured
+            });
+        })();
+
+        // Backward-compatible helpers.
+        function normalizeForBase27(s) { return CVNSSBase27S.normalizeCvss(s); }
+        function computeChecksum(v) { return CVNSSBase27S.checksum(BigInt(v)); }
+        function attachChecksum(v) { const r = CVNSSBase27S.seal(BigInt(v)); return { secured: r.secured, checksum: r.checksum }; }
+        function verifyChecksum(sec) {
+            const r = CVNSSBase27S.verifySecured(String(sec));
+            return { rawValue: r.rawValue, valid: !!r.ok, receivedCs: r.receivedChecksum, expectedCs: r.expectedChecksum };
+        }
+        function encodeBase27(text) {
+            const r = CVNSSBase27S.encode(text);
+            return { canonical: r.canonical, digits: r.digits, value: r.value };
+        }
+        function decodeBase27(value) {
+            const r = CVNSSBase27S.decodeRaw(BigInt(value));
+            return { text: r.text, digits: r.digits };
+        }
+
+
+
+
+
+    // ============================================================
+    //  Minimal Google-style UI controller
+    // ============================================================
+    const $ = id => document.getElementById(id);
+    const els = {
+      cqnText: $("cqnText"), cvssText: $("cvssText"), securedInput: $("securedInput"),
+      mainStatus: $("mainStatus"), syncChip: $("syncChip"), checksumChip: $("checksumChip"),
+      decCqn: $("decCqn"), decCvss: $("decCvss"), decCqnUpper: $("decCqnUpper"), decDigits: $("decDigits"), mainDigSeq: $("mainDigSeq"),
+      baseInput: $("baseInput"), encCanon: $("encCanon"), digSeq: $("digSeq"), rawNum: $("rawNum"), securedOut: $("securedOut"), csOut: $("csOut"),
+      cvssOut: $("cvssOut"), cvnOut: $("cvnOut"), encStatus: $("encStatus"), convStatus: $("convStatus"), decStatus: $("decStatus"),
+      mChars: $("mChars"), mDigits: $("mDigits"), mUtf8: $("mUtf8"), mRaw: $("mRaw"),
+      auditSummary: $("auditSummary"), auditList: $("auditList"), detailsDialog: $("detailsDialog"), digitMapDialog: $("digitMapDialog"),
+      digitMapSource: $("digitMapSource"), digitMapDigits: $("digitMapDigits"), digitMapBody: $("digitMapBody"),
+      btnOpenDetails: $("btnOpenDetails"), btnCloseDetails: $("btnCloseDetails"), btnOpenDigitMap: $("btnOpenDigitMap"), btnCloseDigitMap: $("btnCloseDigitMap"), btnCopySecured: $("btnCopySecured"), btnCopyRaw: $("btnCopyRaw"), btnCopyDigits: $("btnCopyDigits"), btnRunAudit: $("btnRunAudit"), btnUseKnown: $("btnUseKnown")
+    };
+    let lock = false;
+    const encoder = new TextEncoder();
+
+    function setText(el, v, fallback="") { if (el) el.textContent = (v === undefined || v === null || v === "") ? fallback : String(v); }
+    function digitsToText(digits) { return (digits || []).map(d => d.toString()).join(" "); }
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch])); }
+    function digitExplain(ch, digit) {
+      if (digit === 0) return "Khoảng trắng được mã hóa bằng 0 để tách token CVNSS4.0.";
+      return "Chữ " + ch.toUpperCase() + " có thứ tự " + digit + " trong bảng A=1 … Z=26.";
+    }
+    function renderMainDigits(digits) { setText(els.mainDigSeq, digitsToText(digits), "—"); }
+    function renderDigitMap() {
+      const source = (els.encCanon.textContent || els.cvssText.value || "").toLowerCase();
+      let enc;
+      try { enc = CVNSSBase27S.encode(source); } catch (err) {
+        setText(els.digitMapSource, source || "(rỗng)");
+        setText(els.digitMapDigits, "Không thể tạo dãy digit: " + err.message);
+        els.digitMapBody.innerHTML = "";
+        return;
+      }
+      setText(els.digitMapSource, enc.canonicalLower || "(rỗng)");
+      setText(els.digitMapDigits, digitsToText(enc.digits), "(rỗng)");
+      const chars = Array.from(enc.canonical);
+      els.digitMapBody.innerHTML = chars.map((ch, idx) => {
+        const digit = Number(enc.digits[idx]);
+        const shown = ch === " " ? "space" : ch.toUpperCase();
+        const pillClass = ch === " " ? "char-pill char-space" : "char-pill";
+        return `<tr><td>${idx + 1}</td><td><span class="${pillClass}">${escapeHtml(shown)}</span></td><td><b>${digit}</b></td><td>${escapeHtml(digitExplain(ch, digit))}</td></tr>`;
+      }).join("");
+    }
+    function setChip(el, kind, text) { el.className = "chip" + (kind ? " " + kind : ""); el.textContent = text; }
+    function setMain(kind, text) { els.mainStatus.className = "status" + (kind ? " " + kind : ""); els.mainStatus.textContent = text; }
+    function setDetail(el, kind, text) { if (!el) return; el.textContent = text || ""; el.dataset.kind = kind || ""; }
+    function cvssToCqnVariants(cvssText) {
+      const lowerCvss = String(cvssText || "").toLowerCase();
+      const cqnLower = lowerCvss ? CVNSSConverter.fromCvss(lowerCvss).cqn : "";
+      return { lowerCvss, cqnLower, cqnUpper: cqnLower.toLocaleUpperCase("vi-VN") };
+    }
+    function updateMetrics(canonical, secured) {
+      setText(els.mChars, canonical.length);
+      setText(els.mDigits, secured ? secured.toString().length : 0);
+      setText(els.mUtf8, encoder.encode(els.cqnText.value || "").length);
+      try { setText(els.mRaw, CVNSSBase27S.encode(canonical).value.toString().length + " digits"); } catch { setText(els.mRaw, "—"); }
+    }
+    function clearDecoded() {
+      setText(els.decCvss, ""); setText(els.decCqn, ""); setText(els.decCqnUpper, ""); setText(els.decDigits, ""); renderMainDigits([]);
+    }
+    function renderEncodingFromCvss(cvssValue, updateNumber=true) {
+      const enc = CVNSSBase27S.encode(cvssValue);
+      const sealed = CVNSSBase27S.seal(enc.value);
+      els.baseInput.value = enc.canonicalLower;
+      setText(els.encCanon, enc.canonicalLower, "(rỗng)");
+      setText(els.digSeq, digitsToText(enc.digits), "(rỗng)"); renderMainDigits(enc.digits);
+      setText(els.rawNum, enc.value.toString(), "1");
+      setText(els.securedOut, sealed.secured.toString());
+      setText(els.csOut, sealed.checksum.toString() + " / 97");
+      updateMetrics(enc.canonical, sealed.secured);
+      if (updateNumber) els.securedInput.value = sealed.secured.toString();
+      setDetail(els.encStatus, "ok", "✓ Mã hóa OK · CS=Weighted Sum Mod 97 trên dãy digit Base27.");
+      return {enc, sealed};
+    }
+    function renderFromCqn() {
+      if (lock) return; lock = true;
+      try {
+        const converted = CVNSSConverter.fromCqn(els.cqnText.value || "");
+        els.cvssText.value = converted.cvss;
+        setText(els.cvssOut, converted.cvss, "(rỗng)"); setText(els.cvnOut, converted.cvn, "(rỗng)");
+        const packed = renderEncodingFromCvss(converted.cvss, true);
+        const variants = cvssToCqnVariants(packed.enc.canonicalLower);
+        setText(els.decCvss, variants.lowerCvss, "(rỗng)"); setText(els.decCqn, variants.cqnLower, "(rỗng)"); setText(els.decCqnUpper, variants.cqnUpper, "(rỗng)"); setText(els.decDigits, digitsToText(packed.enc.digits), "(rỗng)");
+        setMain("ok", "✓ Đã đồng bộ Chữ tiếng Việt (CQN) → CVNSS4.0 → dãy số đã xác thực."); setChip(els.syncChip,"ok","SYNC OK"); setChip(els.checksumChip,"ok","CS " + packed.sealed.checksum.toString() + "/97");
+        setDetail(els.convStatus, "ok", "✓ Chữ tiếng Việt (CQN) → CVNSS4.0 đã đồng bộ."); setDetail(els.decStatus, "ok", "✓ Dãy số sinh ra hợp lệ.");
+      } catch (err) {
+        setMain("bad", "Lỗi chuyển đổi: " + err.message); setChip(els.syncChip,"bad","LỖI"); setChip(els.checksumChip,"bad","CS —"); clearDecoded();
+      } finally { lock = false; }
+    }
+    function renderFromCvss() {
+      if (lock) return; lock = true;
+      try {
+        const converted = CVNSSConverter.fromCvss(els.cvssText.value || "");
+        els.cqnText.value = converted.cqn;
+        setText(els.cvssOut, converted.cvss, "(rỗng)"); setText(els.cvnOut, converted.cvn, "(rỗng)");
+        const packed = renderEncodingFromCvss(converted.cvss, true);
+        setText(els.decCvss, packed.enc.canonicalLower, "(rỗng)"); setText(els.decCqn, converted.cqn, "(rỗng)"); setText(els.decCqnUpper, converted.cqn.toLocaleUpperCase("vi-VN"), "(rỗng)"); setText(els.decDigits, digitsToText(packed.enc.digits), "(rỗng)");
+        setMain("ok", "✓ Đã đồng bộ CVNSS4.0 → CQN → dãy số đã xác thực."); setChip(els.syncChip,"ok","SYNC OK"); setChip(els.checksumChip,"ok","CS " + packed.sealed.checksum.toString() + "/97");
+        setDetail(els.convStatus, "ok", "✓ CVNSS4.0 → CQN đã đồng bộ."); setDetail(els.decStatus, "ok", "✓ Dãy số sinh ra hợp lệ.");
+      } catch (err) {
+        setMain("bad", "Lỗi CVNSS4.0: " + err.message); setChip(els.syncChip,"bad","LỖI"); clearDecoded();
+      } finally { lock = false; }
+    }
+    function renderFromNumber() {
+      if (lock) return; lock = true;
+      try {
+        const cls = CVNSSBase27S.classifySecured(els.securedInput.value);
+        if (cls.kind === "empty") { clearDecoded(); setMain("", "Nhập Chữ tiếng Việt (CQN), CVNSS4.0 hoặc dán dãy số đã xác thực."); setChip(els.syncChip,"","SYNC"); setChip(els.checksumChip,"","CS"); return; }
+        if (cls.kind === "not_digits") throw new Error("Dãy số không hợp lệ: " + cls.message);
+        if (cls.kind === "missing_checksum") {
+          clearDecoded();
+          const tail = cls.suggestedSecured ? " Gợi ý số gửi đúng: " + cls.suggestedSecured.toString() + "." : "";
+          setMain("warn", (cls.message || "Dãy số không hợp lệ: chưa có checksum.") + tail);
+          setChip(els.syncChip,"warn","CHƯA CS"); setChip(els.checksumChip,"warn","KHÔNG HỢP LỆ");
+          setDetail(els.decStatus,"warn",(cls.message || "Thiếu checksum.") + tail);
+          return;
+        }
+        if (cls.kind === "checksum_error") throw new Error("Lỗi giải mã: " + cls.message);
+        if (cls.kind === "bad_sentinel") throw new Error(cls.message);
+        if (cls.kind !== "valid") throw new Error(cls.message || "Dãy số không hợp lệ.");
+        const variants = cvssToCqnVariants(cls.decoded.text);
+        els.cvssText.value = variants.lowerCvss;
+        els.cqnText.value = variants.cqnLower;
+        setText(els.decCvss, variants.lowerCvss, "(rỗng)"); setText(els.decCqn, variants.cqnLower, "(rỗng)"); setText(els.decCqnUpper, variants.cqnUpper, "(rỗng)"); setText(els.decDigits, digitsToText(cls.decoded.digits), "(rỗng)");
+        const converted = CVNSSConverter.fromCvss(variants.lowerCvss);
+        setText(els.cvssOut, converted.cvss, "(rỗng)"); setText(els.cvnOut, converted.cvn, "(rỗng)");
+        setText(els.rawNum, cls.rawValue.toString()); setText(els.securedOut, cls.secured.toString()); setText(els.csOut, cls.receivedChecksum.toString() + " / 97");
+        setText(els.encCanon, variants.lowerCvss); setText(els.digSeq, digitsToText(cls.decoded.digits)); renderMainDigits(cls.decoded.digits); updateMetrics(cls.decoded.text, cls.secured);
+        setMain("ok", "✓ Dãy số xác thực hợp lệ · Checksum OK " + cls.receivedChecksum.toString() + "/97."); setChip(els.syncChip,"ok","SYNC OK"); setChip(els.checksumChip,"ok","CS OK");
+        setDetail(els.decStatus,"ok","✓ Dãy số xác thực hợp lệ · V=" + cls.rawValue.toString());
+      } catch (err) {
+        clearDecoded(); setMain("bad", err.message); setChip(els.syncChip,"bad","LỖI"); setChip(els.checksumChip,"bad","CS SAI"); setDetail(els.decStatus,"bad",err.message);
+      } finally { lock = false; }
+    }
+    function assertAudit(name, fn) { try { fn(); return {ok:true,name,detail:"PASS"}; } catch(err) { return {ok:false,name,detail:err.message}; } }
+    function eq(a,b,label) { if (String(a) !== String(b)) throw new Error(label + ": " + a + " ≠ " + b); }
+    function runStrictAudit() {
+      const knownCvss="ahp mais iwy em", knownRaw="3098556338022318964063", knownCs="96", knownSecured="309855633802231896406396";
+      const results=[];
+      results.push(assertAudit("Vòng 1 · Vector Base27-CVNSS4.0 + Weighted checksum cố định",()=>{const e=CVNSSBase27S.encode(knownCvss);const s=CVNSSBase27S.seal(e.value);eq(e.canonicalLower,knownCvss,"canonical");eq(e.value.toString(),knownRaw,"raw V");eq(s.checksum.toString(),knownCs,"checksum");eq(s.secured.toString(),knownSecured,"secured T");const ex=CVNSSBase27S.encode("toiy iwy vidf nam");eq(digitsToText(ex.digits),"20 15 9 25 0 9 23 25 0 22 9 4 6 0 14 1 13","digits toiy");}));
+      results.push(assertAudit("Vòng 2 · Round-trip CQN ⇄ CVNSS ⇄ Số",()=>{const cv=CVNSSConverter.fromCqn("Tôi yêu Việt Nam").cvss;const e=CVNSSBase27S.encode(cv);const s=CVNSSBase27S.seal(e.value);const d=CVNSSBase27S.decodeSecured(s.secured.toString());eq(d.textLower,e.canonicalLower,"decoded CVNSS");eq(CVNSSConverter.fromCvss(d.textLower).cqn,"tôi yêu việt nam","CQN chuẩn hóa");}));
+      results.push(assertAudit("Vòng 3 · Cảnh báo số gốc chưa checksum",()=>{const rawOnly=CVNSSBase27S.classifySecured(knownRaw);eq(rawOnly.kind,"missing_checksum","classification");eq(rawOnly.suggestedSecured.toString(),knownSecured,"suggested T");}));
+      results.push(assertAudit("Vòng 4 · Bắt lỗi checksum/sentinel",()=>{const wrong=CVNSSBase27S.classifySecured("309855633802231896406363");eq(wrong.kind,"checksum_error","wrong checksum classification");eq(wrong.receivedChecksum.toString(),"63","received checksum");eq(wrong.expectedChecksum.toString(),"96","expected checksum");const tooShort=CVNSSBase27S.classifySecured("99");eq(tooShort.kind,"missing_checksum","too short classification");}));
+      renderAudit(results); return results;
+    }
+    function renderAudit(results) {
+      const passed=results.filter(r=>r.ok).length;
+      els.auditSummary.textContent = passed + "/" + results.length + " PASS";
+      els.auditSummary.className = "chip " + (passed === results.length ? "ok" : "warn");
+      els.auditList.innerHTML = results.map(r => `<div class="audit-item"><i class="dot ${r.ok ? "ok" : "bad"}"></i><div><b>${r.name}</b><span>${r.detail}</span></div><small>${r.ok ? "OK" : "FAIL"}</small></div>`).join("");
+    }
+    async function copyText(text) {
+      if (!text) return;
+      try { await navigator.clipboard.writeText(text); }
+      catch (_) { const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+    }
+    function loadKnownVector() { els.cvssText.value = "ahp mais iwy em"; renderFromCvss(); }
+
+    els.cqnText.addEventListener("input", renderFromCqn);
+    els.cvssText.addEventListener("input", renderFromCvss);
+    els.securedInput.addEventListener("input", renderFromNumber);
+    els.btnCopySecured.addEventListener("click", () => copyText(els.securedInput.value.trim() || els.securedOut.textContent.trim()));
+    els.btnCopyRaw.addEventListener("click", () => copyText(els.rawNum.textContent.trim()));
+    els.btnRunAudit.addEventListener("click", () => { const r=runStrictAudit(); const ok=r.every(x=>x.ok); setMain(ok?"ok":"bad", ok?"✓ Loop kiểm định 4 vòng PASS.":"Có vòng kiểm định FAIL, xem chi tiết."); });
+    els.btnUseKnown.addEventListener("click", loadKnownVector);
+    els.btnOpenDetails.addEventListener("click", () => { runStrictAudit(); els.detailsDialog.showModal(); });
+    els.btnCloseDetails.addEventListener("click", () => els.detailsDialog.close());
+    els.btnOpenDigitMap.addEventListener("click", () => { renderDigitMap(); els.digitMapDialog.showModal(); });
+    els.btnCloseDigitMap.addEventListener("click", () => els.digitMapDialog.close());
+    els.btnCopyDigits.addEventListener("click", () => copyText(els.mainDigSeq.textContent.trim()));
+    window.addEventListener("DOMContentLoaded", () => { renderFromCqn(); runStrictAudit(); });
+  </script>
+</body>
+</html>
